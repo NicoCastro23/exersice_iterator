@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 class Inventario {
     private List<Producto> productos;
 
@@ -15,6 +16,10 @@ class Inventario {
         productos.add(producto);
     }
 
+    public List<Producto> getProductos(){
+        return productos;
+    }
+
     public IteratorProducto crearIteradorPorCategoria(String categoria) {
         return new IteradorPorCategoria(categoria);
     }
@@ -22,34 +27,33 @@ class Inventario {
     
     private class IteradorPorCategoria implements IteratorProducto {
         private String categoria;
-        private Iterator<Producto> iterador;
-
+        private List<Producto> productosFiltrados;
+        private int indice;
+    
         public IteradorPorCategoria(String categoria) {
             this.categoria = categoria;
-            this.iterador = productos.iterator();
-        }
-
-        @Override
-        public boolean hasNext() {
-            while (iterador.hasNext()) {
-                Producto producto = iterador.next();
+            this.productosFiltrados = new ArrayList<>();
+            for (Producto producto : productos) {
                 if (producto.getCategoria().equals(categoria)) {
-                    return true;
+                    productosFiltrados.add(producto);
                 }
             }
-            return false;
+            this.indice = 0;
         }
-
+    
+        @Override
+        public boolean hasNext() {
+            return indice < productosFiltrados.size();
+        }
+    
         @Override
         public Producto next() {
-            while (iterador.hasNext()) {
-                Producto producto = iterador.next();
-                if (producto.getCategoria().equals(categoria)) {
-                    return producto;
-                }
+            if (hasNext()) {
+                Producto producto = productosFiltrados.get(indice);
+                indice++;
+                return producto;
             }
             return null;
         }
     }
 }
-

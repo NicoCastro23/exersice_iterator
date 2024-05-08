@@ -1,59 +1,49 @@
 package co.edu.uniquindio.poo;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.NoSuchElementException;
 
+public class Inventario implements IterableCollection<Producto>{
+    private Producto[] productos;
 
-class Inventario {
-    private List<Producto> productos;
-
-    public Inventario() {
-        productos = new ArrayList<>();
+    public Inventario(Producto[] productos){
+        this.productos = productos;
     }
 
-    public void agregarProducto(Producto producto) {
-        productos.add(producto);
+    @Override
+    public Iterator<Producto> iterator(String categoria) {      
+        return new ProductosIterator(categoria);
     }
-
-    public List<Producto> getProductos(){
-        return productos;
-    }
-
-    public IteratorProducto crearIteradorPorCategoria(String categoria) {
-        return new IteradorPorCategoria(categoria);
-    }
-
     
-    private class IteradorPorCategoria implements IteratorProducto {
-        private String categoria;
-        private List<Producto> productosFiltrados;
+    private class ProductosIterator implements Iterator<Producto>{
         private int indice;
-    
-        public IteradorPorCategoria(String categoria) {
-            this.categoria = categoria;
-            this.productosFiltrados = new ArrayList<>();
-            for (Producto producto : productos) {
-                if (producto.getCategoria().equals(categoria)) {
-                    productosFiltrados.add(producto);
-                }
-            }
+        private String categoria;
+
+        public ProductosIterator(String categoria){
             this.indice = 0;
+            this.categoria = categoria;
         }
-    
+
         @Override
         public boolean hasNext() {
-            return indice < productosFiltrados.size();
+            // Itera desde el índice actual hasta encontrar un producto que coincida con la categoría
+            while (indice < productos.length) {
+                if (productos[indice].getCategoria().equals(categoria)) {
+                    return true;
+                }
+                indice++;
+            }
+            return false;
         }
-    
+
         @Override
         public Producto next() {
             if (hasNext()) {
-                Producto producto = productosFiltrados.get(indice);
+                // Devuelve el producto actual y avanza al siguiente que coincida con la categoría
+                Producto producto = productos[indice];
                 indice++;
                 return producto;
             }
-            return null;
+            throw new NoSuchElementException("No hay más elementos en la lista.");
         }
     }
 }

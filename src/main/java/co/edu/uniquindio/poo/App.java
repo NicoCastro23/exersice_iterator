@@ -28,7 +28,7 @@ public class App {
         //Se crea el iterador de "Calzado"
         Iterator<Producto> iterator2 = inventario.iterator("Calzado");
 
-        // Mostrar productos de la categoría "Ropa"
+        // Mostrar productos de la categoría "Calzado"
         System.out.println("Productos de la categoría 'Calzado':");
         while (iterator2.hasNext()) {
             Producto producto = iterator2.next();
